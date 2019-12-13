@@ -1,0 +1,12 @@
+*.old
+.*.swp
+.bundle
+.sass-cache
+.vagrant/
+checksums.json
+nohup.out
+pkg/*
+vendor/
+keys/
+build/
+certs/
