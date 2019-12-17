@@ -9,7 +9,8 @@
 ## Overview
 
 Simply container script to run and count HashiCorp Vault entities, roles/users, 
-and tokens created without entities.
+and tokens created without entities. The script will drill into an child 
+namespaces below the supplied namespace input.
 
 ## Usage
 
@@ -58,6 +59,12 @@ A token with enough permissions to access the `identity/` and  `sys/auth/`
 endpoints.
 
 Default: `root`
+
+* `VAULT_NAMESPACE`
+
+Namespace within Vault to count along with all child namespaces.
+
+Default: `null`
 
 * `VAULT_CLIENT_CERT`
 
