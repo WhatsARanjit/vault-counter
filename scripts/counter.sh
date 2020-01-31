@@ -42,10 +42,13 @@ function count_things() {
   done
 
   # Tokens
-  TOTAL_TOKENS=0
-  for accessor in $(vault_curl \
+  TOTAL_TOKENS_RAW=$(vault_curl \
    --request LIST \
-   $VAULT_ADDR/v1/auth/token/accessors | \
+   $VAULT_ADDR/v1/auth/token/accessors
+  )
+  TOTAL_TOKENS=$(echo $TOTAL_TOKENS_RAW | jq -r '.? | .["data"]["keys"] | length')
+  TOTAL_ORPHAN_TOKENS=0
+  for accessor in $(echo $TOTAL_TOKENS_RAW | \
    jq -r '.? | .["data"]["keys"] | join("\n")');
   do
    token=$(vault_curl \
@@ -53,10 +56,10 @@ function count_things() {
      -d "{ \"accessor\": \"${accessor}\" }" \
      $VAULT_ADDR/v1/auth/token/lookup-accessor | \
      jq -r '.? | .| [select(.data.path == "auth/token/create")] | length')
-   TOTAL_TOKENS=$((TOTAL_TOKENS + $token))
+   TOTAL_ORPHAN_TOKENS=$((TOTAL_ORPHAN_TOKENS + $token))
   done
 
-  echo "$TOTAL_ENTITIES,$TOTAL_ROLES,$TOTAL_TOKENS"
+  echo "$TOTAL_ENTITIES,$TOTAL_ROLES,$TOTAL_TOKENS,$TOTAL_ORPHAN_TOKENS"
 }
 
 function output() {
@@ -65,6 +68,7 @@ function output() {
   echo "Total entities: ${array[0]}"
   echo "Total users/roles: ${array[1]}"
   echo "Total tokens: ${array[2]}"
+  echo "Total orphan tokens: ${array[3]}"
 }
 
 function drill_in() {
