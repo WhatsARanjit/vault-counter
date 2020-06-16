@@ -27,6 +27,7 @@ function count_things() {
   # Roles
   TOTAL_ROLES=0
   for mount in $(vault_curl \
+   --request GET \
    $VAULT_ADDR/v1/sys/auth | \
    jq -r '.? | .["data"] | keys[]');
   do
@@ -38,7 +39,11 @@ function count_things() {
      --request LIST \
      $VAULT_ADDR/v1/auth/${mount}roles | \
      jq -r '.? | .["data"]["keys"] | length')
-   TOTAL_ROLES=$((TOTAL_ROLES + users + roles))
+   certs=$(vault_curl \
+     --request LIST \
+     $VAULT_ADDR/v1/auth/${mount}certs | \
+     jq -r '.? | .["data"]["keys"] | length')
+   TOTAL_ROLES=$((TOTAL_ROLES + users + roles + certs))
   done
 
   # Tokens
