@@ -35,6 +35,10 @@ function count_things() {
      --request LIST \
      $VAULT_ADDR/v1/auth/${mount}users | \
      jq -r '.? | .["data"]["keys"] | length')
+   role=$(vault_curl \
+     --request LIST \
+     $VAULT_ADDR/v1/auth/${mount}role | \
+     jq -r '.? | .["data"]["keys"] | length')
    roles=$(vault_curl \
      --request LIST \
      $VAULT_ADDR/v1/auth/${mount}roles | \
@@ -43,7 +47,11 @@ function count_things() {
      --request LIST \
      $VAULT_ADDR/v1/auth/${mount}certs | \
      jq -r '.? | .["data"]["keys"] | length')
-   TOTAL_ROLES=$((TOTAL_ROLES + users + roles + certs))
+   groups=$(vault_curl \
+     --request LIST \
+     $VAULT_ADDR/v1/auth/${mount}groups | \
+     jq -r '.? | .["data"]["keys"] | length')
+   TOTAL_ROLES=$((TOTAL_ROLES + users + role + roles + certs + groups))
   done
 
   # Tokens
