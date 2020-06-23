@@ -26,6 +26,7 @@ Vault address: http://my.vault.url.com:8200
 Total entities: 2
 Total auth roles/users: 2
 Total tokens: 1
+Total orphan tokens: 1
 ```
 
 **TLS Example**
@@ -38,6 +39,18 @@ docker run --rm \
   -e VAULT_CLIENT_CERT=/certs/test.crt \
   -e VAULT_CLIENT_KEY=/certs/test.key \
   -e VAULT_CACERT=/certs/ca.crt \
+  -e VAULT_ADDR=https://my.vault.url.com:8200 \
+  -e VAULT_TOKEN=$VAULT_TOKEN \
+  whatsaranjit/vault_counter
+```
+
+**Skip Orphan Tokens Example**
+
+By default, the process will inspect _each_ token to see if it was created by an auth method, or created outside of that.  This process can be time-consuming if you have a lot of tokens.  To skip this, set the `SKIP_ORPHAN_TOKENS` to anything.
+
+```
+docker run --rm \
+  -e SKIP_ORPHAN_TOKENS=yes \
   -e VAULT_ADDR=https://my.vault.url.com:8200 \
   -e VAULT_TOKEN=$VAULT_TOKEN \
   whatsaranjit/vault_counter
@@ -81,6 +94,12 @@ Default: `null`
 * `VAULT_CACERT`
 
 Path to file containing the CA certificate.
+
+Default: `null`
+
+* `SKIP_ORPHAN_TOKENS`
+
+Set to anything to skip inspecting each token to see if it is tied to an auth method.
 
 Default: `null`
 
