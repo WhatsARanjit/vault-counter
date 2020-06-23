@@ -61,16 +61,19 @@ function count_things() {
   )
   TOTAL_TOKENS=$(echo $TOTAL_TOKENS_RAW | jq -r '.? | .["data"]["keys"] | length')
   TOTAL_ORPHAN_TOKENS=0
-  for accessor in $(echo $TOTAL_TOKENS_RAW | \
-   jq -r '.? | .["data"]["keys"] | join("\n")');
-  do
-   token=$(vault_curl \
-     --request POST \
-     -d "{ \"accessor\": \"${accessor}\" }" \
-     $VAULT_ADDR/v1/auth/token/lookup-accessor | \
-     jq -r '.? | .| [select(.data.path == "auth/token/create")] | length')
-   TOTAL_ORPHAN_TOKENS=$((TOTAL_ORPHAN_TOKENS + $token))
-  done
+  if [ -z "$SKIP_ORPHAN_TOKENS" ]
+  then
+    for accessor in $(echo $TOTAL_TOKENS_RAW | \
+     jq -r '.? | .["data"]["keys"] | join("\n")');
+    do
+     token=$(vault_curl \
+       --request POST \
+       -d "{ \"accessor\": \"${accessor}\" }" \
+       $VAULT_ADDR/v1/auth/token/lookup-accessor | \
+       jq -r '.? | .| [select(.data.path == "auth/token/create")] | length')
+     TOTAL_ORPHAN_TOKENS=$((TOTAL_ORPHAN_TOKENS + $token))
+    done
+  fi
 
   echo "$TOTAL_ENTITIES,$TOTAL_ROLES,$TOTAL_TOKENS,$TOTAL_ORPHAN_TOKENS"
 }
@@ -81,7 +84,10 @@ function output() {
   echo "Total entities: ${array[0]}"
   echo "Total users/roles: ${array[1]}"
   echo "Total tokens: ${array[2]}"
-  echo "Total orphan tokens: ${array[3]}"
+  if [ -z "$SKIP_ORPHAN_TOKENS" ]
+  then
+    echo "Total orphan tokens: ${array[3]}"
+  fi
 }
 
 function drill_in() {
@@ -102,7 +108,8 @@ function drill_in() {
   then
     echo "$1 child namespaces: $NAMESPACE_LIST"
     for ns in $NAMESPACE_LIST; do
-      drill_in $ns
+      path=$(echo $1 | sed -e 's%^root%%')
+      drill_in "${path}${ns}"
     done
   fi
 }
