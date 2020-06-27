@@ -14,6 +14,8 @@ namespaces below the supplied namespace input.
 
 ## Usage
 
+Use the root token or a token with [the following permissions](policy/vault_counter_policy.hcl) to run this script.
+
 The container runs several cURL commands against the API.  Here's what it looks 
 like with supplied arguments:
 
