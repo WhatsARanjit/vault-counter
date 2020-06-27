@@ -1,0 +1,6 @@
+--- 
+language: generic
+sudo: false
+os: osx
+script:
+  - "bash -n scripts/*"
