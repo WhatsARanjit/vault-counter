@@ -4,3 +4,4 @@ sudo: false
 os: osx
 script:
   - "bash -n scripts/*"
+  - "./checks/validate.sh"

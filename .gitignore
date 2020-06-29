@@ -10,3 +10,5 @@ vendor/
 keys/
 build/
 certs/
+vault
+vault.zip
