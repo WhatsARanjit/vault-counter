@@ -4,6 +4,7 @@ sudo: false
 os: osx
 addons:
   homebrew:
+    update: true
     packages:
       - jq
 script:
