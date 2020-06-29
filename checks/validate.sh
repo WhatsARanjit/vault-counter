@@ -65,7 +65,7 @@ configure_namespace 'dev/subdev/'
 unset VAULT_NAMESPACE
 export VAULT_TOKEN=root
 results=$(mktemp)
-./scripts/counter.sh > $results
+./scripts/counter.sh | tee $results
 diff $results checks/pass.out
 code=$?
 
