@@ -13,7 +13,7 @@ if [ ! -f "vault" ]; then
 fi
 
 # Start Vault server in the background
-alias vault='./vault'
+alias vault='../vault'
 nohup vault server -dev -dev-root-token-id='root' &
 sleep 5
 export VAULT_ADDR=http://127.0.0.1:8200
