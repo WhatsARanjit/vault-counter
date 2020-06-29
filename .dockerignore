@@ -1,0 +1,10 @@
+*.old
+.*.swp
+*.md
+Dockerfile
+certs/
+checks/
+nohup.out
+policy/
+vault
+vault.zip
