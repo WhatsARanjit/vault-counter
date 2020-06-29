@@ -12,6 +12,9 @@ if [ ! -f "vault" ]; then
   unzip vault.zip
 fi
 
+ls -l .
+ls -l ..
+
 # Start Vault server in the background
 alias vault='../vault'
 nohup vault server -dev -dev-root-token-id='root' &
