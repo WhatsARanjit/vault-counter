@@ -12,12 +12,8 @@ if [ ! -f "vault" ]; then
   unzip vault.zip
 fi
 
-ls -l .
-ls -l ..
-
 # Start Vault server in the background
-alias vault='../vault'
-nohup vault server -dev -dev-root-token-id='root' &
+nohup ./vault server -dev -dev-root-token-id='root' &
 sleep 5
 export VAULT_ADDR=http://127.0.0.1:8200
 export VAULT_TOKEN=root
@@ -36,21 +32,21 @@ function configure_namespace() {
   export VAULT_NAMESPACE=$parent
   # Create namespace if not root
   if [ "$1" != "root/" ]; then
-    vault namespace create $ns
+    ./vault namespace create $ns
   fi
   # Create a number of tokens based on namespace length
   export VAULT_NAMESPACE=$1
   len=$(echo $1 | wc -c)
   for i in $(seq 1 $len); do
-    vault token create
+    ./vault token create
   done
-  vault auth enable userpass
-  vault write auth/userpass/users/mitchellh \
+  ./vault auth enable userpass
+  ./vault write auth/userpass/users/mitchellh \
     password=foo
-  vault write auth/userpass/users/armond \
+  ./vault write auth/userpass/users/armond \
     password=foo
    unset VAULT_TOKEN
-  vault login -method=userpass \
+  ./vault login -method=userpass \
     username=armond \
     password=foo
 }
