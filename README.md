@@ -1,4 +1,4 @@
-# Vault Counter
+# Vault Counter [![Build Status](https://travis-ci.org/WhatsARanjit/vault-counter.svg?branch=master)](https://travis-ci.org/WhatsARanjit/vault-counter)
 
 #### Table of Contents
 

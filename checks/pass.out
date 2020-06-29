@@ -1,0 +1,18 @@
+Vault address: http://127.0.0.1:8200
+Namespace: root/
+Total entities: 1
+Total users/roles: 2
+Total tokens: 8
+Total orphan tokens: 7
+root/ child namespaces: dev/
+Namespace: /dev/
+Total entities: 1
+Total users/roles: 2
+Total tokens: 6
+Total orphan tokens: 5
+/dev/ child namespaces: subdev/
+Namespace: /dev/subdev/
+Total entities: 1
+Total users/roles: 2
+Total tokens: 13
+Total orphan tokens: 12

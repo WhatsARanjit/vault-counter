@@ -2,5 +2,10 @@
 language: generic
 sudo: false
 os: osx
+addons:
+  homebrew:
+    update: true
+    packages:
+      - jq
 script:
-  - "bash -n scripts/*"
+  - "./checks/validate.sh"
