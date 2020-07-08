@@ -66,6 +66,7 @@ unset VAULT_NAMESPACE
 export VAULT_TOKEN=root
 results=$(mktemp)
 ./scripts/counter.sh | tee $results
+JSON_OUTPUT=1 ./scripts/counter.sh | tee -a $results
 diff $results checks/pass.out
 code=$?
 

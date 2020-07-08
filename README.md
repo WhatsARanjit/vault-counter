@@ -99,6 +99,12 @@ Path to file containing the CA certificate.
 
 Default: `null`
 
+* `JSON_OUTPUT`
+
+Set to anything to format output in a JSON structure.
+
+Default: `null`
+
 * `SKIP_ORPHAN_TOKENS`
 
 Set to anything to skip inspecting each token to see if it is tied to an auth method.

@@ -16,3 +16,4 @@ Total entities: 1
 Total users/roles: 2
 Total tokens: 13
 Total orphan tokens: 12
+{ "VAULT_ADDR": "http://127.0.0.1:8200", "namespaces": { "root/": { "entities": 1, "users/roles": 2, "tokens": 8, "orphan tokens": 7 }, "/dev/": { "entities": 1, "users/roles": 2, "tokens": 6, "orphan tokens": 5 }, "/dev/subdev/": { "entities": 1, "users/roles": 2, "tokens": 13, "orphan tokens": 12 } }, "totals": { "entities": 3, "users/roles": 6, "tokens": 27, "orphan tokens": 24 } }
