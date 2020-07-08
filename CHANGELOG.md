@@ -1,3 +1,9 @@
+## 2020-07-08 - Release 0.0.7
+
+### Summary
+
+- Added JSON output format
+
 ## 2020-06-23 - Release 0.0.6
 
 ### Summary

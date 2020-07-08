@@ -23,7 +23,7 @@ like with supplied arguments:
 $ docker run --rm \
   -e VAULT_ADDR=http://my.vault.url.com:8200 \
   -e VAULT_TOKEN=$VAULT_TOKEN \
-  whatsaranjit/vault_counter
+  whatsaranjit/vault_counter:latest
 Vault address: http://my.vault.url.com:8200
 Total entities: 2
 Total auth roles/users: 2
@@ -31,11 +31,53 @@ Total tokens: 1
 Total orphan tokens: 1
 ```
 
+**JSON example**
+
+Provide JSON output from the script.
+
+```shell
+$ docker run --rm \
+  -e VAULT_ADDR=http://my.vault.url.com:8200 \
+  -e VAULT_TOKEN=$VAULT_TOKEN \
+  -e JSON_OUTPUT=1 \
+  whatsaranjit/vault_counter:0.0.7 \
+  | jq
+{
+  "VAULT_ADDR": "http://my.vault.url.com:8200",
+  "namespaces": {
+    "root/": {
+      "entities": 1,
+      "users/roles": 2,
+      "tokens": 2,
+      "orphan tokens": 1
+    },
+    "/dev/": {
+      "entities": 2,
+      "users/roles": 2,
+      "tokens": 3,
+      "orphan tokens": 0
+    },
+    "/dev/subdev/": {
+      "entities": 0,
+      "users/roles": 1,
+      "tokens": 16,
+      "orphan tokens": 16
+    }
+  },
+  "totals": {
+    "entities": 3,
+    "users/roles": 5,
+    "tokens": 21,
+    "orphan tokens": 17
+  }
+}
+```
+
 **TLS Example**
 
 Be sure to share the cert/key/ca into the container for use.
 
-```
+```shell
 docker run --rm \
   -v $PWD/certs:/certs \
   -e VAULT_CLIENT_CERT=/certs/test.crt \
@@ -43,19 +85,19 @@ docker run --rm \
   -e VAULT_CACERT=/certs/ca.crt \
   -e VAULT_ADDR=https://my.vault.url.com:8200 \
   -e VAULT_TOKEN=$VAULT_TOKEN \
-  whatsaranjit/vault_counter
+  whatsaranjit/vault_counter:latest
 ```
 
 **Skip Orphan Tokens Example**
 
 By default, the process will inspect _each_ token to see if it was created by an auth method, or created outside of that.  This process can be time-consuming if you have a lot of tokens.  To skip this, set the `SKIP_ORPHAN_TOKENS` to anything.
 
-```
+```shell
 docker run --rm \
   -e SKIP_ORPHAN_TOKENS=yes \
   -e VAULT_ADDR=https://my.vault.url.com:8200 \
   -e VAULT_TOKEN=$VAULT_TOKEN \
-  whatsaranjit/vault_counter
+  whatsaranjit/vault_counter:latest
 ```
 
 ## Inputs
