@@ -1,6 +1,11 @@
 #!/bin/bash
 
-echo "Vault address: ${VAULT_ADDR}"
+if [ -z "$JSON_OUTPUT" ]
+then
+  echo "Vault address: ${VAULT_ADDR}"
+else
+  OUTPUT="{\"VAULT_ADDR\": \"${VAULT_ADDR}\"}"
+fi
 # Set namespace to root if nothing
 VAULT_NAMESPACE=${VAULT_NAMESPACE:-"root/"}
 
@@ -81,12 +86,25 @@ function count_things() {
 function output() {
   # Transform comma-separated list into output
   array=($(echo $1 | sed 's/,/ /g'))
-  echo "Total entities: ${array[0]}"
-  echo "Total users/roles: ${array[1]}"
-  echo "Total tokens: ${array[2]}"
-  if [ -z "$SKIP_ORPHAN_TOKENS" ]
+  # Create plain or JSON output
+  if [ -z "$JSON_OUTPUT" ]
   then
-    echo "Total orphan tokens: ${array[3]}"
+    OUTPUT="Total entities: ${array[0]}"
+    OUTPUT="${OUTPUT}\nTotal users/roles: ${array[1]}"
+    OUTPUT="${OUTPUT}\nTotal tokens: ${array[2]}"
+    if [ -z "$SKIP_ORPHAN_TOKENS" ]
+    then
+      OUTPUT="${OUTPUT}\nTotal orphan tokens: ${array[3]}"
+    fi
+    echo -e $OUTPUT
+  else
+    new="{ \"namespaces\": { \"${VAULT_NAMESPACE}\": { \"entities\": ${array[0]}, \"users/roles\": ${array[1]}, \"tokens\": ${array[2]}"
+    if [ -z "$SKIP_ORPHAN_TOKENS" ]
+    then
+      new="${new}, \"orphan tokens\": ${array[3]}"
+    fi
+    new="${new} } } }"
+    OUTPUT=$(jq -s '.[0] * .[1]' <(echo $OUTPUT) <(echo $new))
   fi
 }
 
@@ -94,7 +112,10 @@ function drill_in() {
   # Run counts where we stand
   VAULT_NAMESPACE=$1
 
-  echo "Namespace: $1"
+  if [ -z "$JSON_OUTPUT" ]
+  then
+    echo "Namespace: $1"
+  fi
   counts=$(count_things $1)
   output $counts
 
@@ -106,7 +127,10 @@ function drill_in() {
 
   if [ ! -z "$NAMESPACE_LIST" ]
   then
-    echo "$1 child namespaces: $NAMESPACE_LIST"
+    if [ -z "$JSON_OUTPUT" ]
+    then
+      echo "$1 child namespaces: $NAMESPACE_LIST"
+    fi
     for ns in $NAMESPACE_LIST; do
       path=$(echo $1 | sed -e 's%^root%%')
       drill_in "${path}${ns}"
@@ -115,3 +139,20 @@ function drill_in() {
 }
 
 drill_in $VAULT_NAMESPACE
+
+# Add totals to JSON
+if [ ! -z "$JSON_OUTPUT" ]
+then
+  total_entities=$(echo $OUTPUT | jq '.namespaces | [.[].entities] | add')
+  total_users=$(echo $OUTPUT | jq '.namespaces | [.[]."users/roles"] | add')
+  total_tokens=$(echo $OUTPUT | jq '.namespaces | [.[].tokens] | add')
+  totals="{ \"totals\": { \"entities\": $total_entities, \"users/roles\": $total_users, \"tokens\": $total_tokens"
+  if [ -z "$SKIP_ORPHAN_TOKENS" ]
+  then
+    total_orphans=$(echo $OUTPUT | jq '.namespaces | [.[]."orphan tokens"] | add')
+    totals="${totals}, \"orphan tokens\": ${total_orphans}"
+  fi
+  totals="${totals} } }"
+  OUTPUT=$(jq -s '.[0] * .[1]' <(echo $OUTPUT) <(echo $totals))
+  echo $OUTPUT
+fi
