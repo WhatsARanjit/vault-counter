@@ -13,7 +13,7 @@ install jq
 # Grab vault binary
 if [ ! -f "vault" ]; then
   rm -rf vault.zip vault
-  curl -o vault.zip "https://releases.hashicorp.com/vault/${VAULT_VERSION}/vault_${VAULT_VERSION}_darwin_amd64.zip"
+  curl -o vault.zip "https://releases.hashicorp.com/vault/${VAULT_VERSION}+ent/vault_${VAULT_VERSION}+ent_darwin_amd64.zip"
   unzip vault.zip
 fi
 
