@@ -7,7 +7,7 @@ JQ_VERSION=${JQ_VERSION:-"1.6"}
 bash -n scripts/*
 
 # Grab jq binary
-curl -o jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-osx-amd64"
+curl -L -o jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-osx-amd64"
 chmod +x jq
 mv jq /usr/local/bin
 
