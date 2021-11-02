@@ -8,7 +8,8 @@ bash -n scripts/*
 
 # Grab jq binary
 curl -o jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-osx-amd64"
-install jq
+chmod +x jq
+mv jq /usr/local/bin
 
 # Grab vault binary
 if [ ! -f "vault" ]; then
