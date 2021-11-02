@@ -1,9 +1,14 @@
 #!/bin/bash
 
 VAULT_VERSION=${VAULT_VERSION:-"1.4.2"}
+JQ_VERSION=${JQ_VERSION:-"1.6"}
 
 # Check bash syntas
 bash -n scripts/*
+
+# Grab jq binary
+curl -o jq "https://github.com/stedolan/jq/releases/download/jq-${JQ_VERSION}/jq-osx-amd64"
+install jq
 
 # Grab vault binary
 if [ ! -f "vault" ]; then

@@ -5,7 +5,5 @@ os: osx
 addons:
   homebrew:
     update: false
-    packages:
-      - jq
 script:
   - "./checks/validate.sh"
